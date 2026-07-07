@@ -1,24 +1,361 @@
 
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notfall-Kompass · Sarah Plainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#faf8f5;--rose-l:#f5e6e8;--rose-m:#e8c4c8;
+  --rose-d:#d4a0a8;--rose-deep:#a03850;
+  --brown:#6b4f3a;--brown-d:#4a3228;--brown-l:#8a6a55;
+  --taupe:#c4b0a0;--line:#e0d8d0;--white:#fff;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-d);min-height:100vh;overflow-x:hidden;}
+.blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(55px);opacity:.5;}
+.blob-tr{top:-130px;right:-130px;width:400px;height:400px;background:radial-gradient(circle,#e8c4c8 0%,transparent 65%);}
+.blob-bl{bottom:-110px;left:-110px;width:360px;height:360px;background:radial-gradient(circle,#d4a0a8 0%,transparent 65%);}
+.wrap{max-width:600px;margin:0 auto;padding:44px 22px 90px;position:relative;z-index:1;}
 
-VON SARAH  ·  @DIGITALSTART.MITSARAH
-Dein Notfall-Kompass.
+/* Intro */
+.intro{text-align:center;margin-bottom:32px;}
+.intro-eye{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--taupe);margin-bottom:16px;}
+.intro-title{font-family:'Lora',serif;font-weight:400;font-size:clamp(30px,7vw,44px);color:var(--brown-d);line-height:1.18;margin-bottom:10px;}
+.intro-title em{font-style:italic;color:var(--rose-deep);}
+.intro-rule{width:56px;height:1px;background:var(--rose-m);margin:16px auto;}
+.intro-sub{font-size:15px;color:var(--brown-l);line-height:1.7;font-weight:300;max-width:420px;margin:0 auto;}
 
-Beschreib kurz was gerade los ist, und bekomm einen persönlichen Impuls, eine Frage und eine Mini-Aufgabe, die genau dazu passen.
-DEIN SATZ FÜR HEUTE
+/* Anchor */
+.anchor-box{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:20px 24px;margin-bottom:32px;text-align:center;position:relative;overflow:hidden;}
+.anchor-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--rose-m),var(--rose-deep));}
+.anchor-lbl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--taupe);margin-bottom:10px;}
+.anchor-txt{font-family:'Lora',serif;font-style:italic;font-size:17px;color:var(--brown);line-height:1.6;}
+.anchor-btn{background:none;border:none;cursor:pointer;font-size:12px;color:var(--taupe);margin-top:10px;font-family:'DM Sans',sans-serif;transition:color .2s;display:block;margin:10px auto 0;}
+.anchor-btn:hover{color:var(--rose-deep);}
 
-↻ Anderen Satz
-SCHRITT 1 VON 1
-Was ist gerade los bei dir?
-Schreib einfach drauf los. Kein perfekter Satz nötig. Je ehrlicher desto besser.
-In meinen eigenen Worten...
-0 Zeichen
+/* Screen system */
+.screen{display:none;}
+.screen.active{display:block;animation:fadeUp .42s cubic-bezier(.4,0,.2,1) both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 
-Meinen Impuls holen →
-Impressum
-·
-Datenschutz
-·
-AGB
-·
-Widerrufsrecht
-@digitalstart.mitsarah  ·  © 2025 Sarah Plainer 
+/* Step label */
+.step-lbl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--taupe);margin-bottom:8px;}
+.sec-title{font-family:'Lora',serif;font-weight:400;font-size:clamp(21px,5vw,28px);color:var(--brown-d);line-height:1.3;margin-bottom:6px;}
+.sec-title em{font-style:italic;color:var(--rose-deep);}
+.sec-sub{font-size:14px;color:var(--brown-l);line-height:1.6;font-weight:300;margin-bottom:22px;}
+
+/* Input */
+.input-lbl{font-size:13px;color:var(--brown-l);margin-bottom:8px;display:block;font-weight:300;}
+.sit-input{width:100%;background:var(--white);border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;font-family:'Lora',serif;font-style:italic;font-size:15px;color:var(--brown-d);resize:none;min-height:110px;outline:none;transition:border-color .2s;line-height:1.65;}
+.sit-input::placeholder{color:var(--taupe);}
+.sit-input:focus{border-color:var(--rose-d);}
+.char-count{font-size:11px;color:var(--taupe);text-align:right;margin-top:5px;}
+
+/* Loading */
+.loading-box{background:var(--white);border-radius:20px;padding:40px 28px;text-align:center;border:1px solid var(--line);margin-bottom:16px;}
+.loading-dots{display:flex;justify-content:center;gap:8px;margin-bottom:18px;}
+.loading-dots span{width:10px;height:10px;border-radius:50%;background:var(--rose-m);animation:pulse 1.4s ease-in-out infinite;}
+.loading-dots span:nth-child(2){animation-delay:.2s;}
+.loading-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes pulse{0%,80%,100%{transform:scale(.6);opacity:.4;}40%{transform:scale(1);opacity:1;}}
+.loading-txt{font-family:'Lora',serif;font-style:italic;font-size:16px;color:var(--brown-l);}
+.loading-sub{font-size:13px;color:var(--taupe);margin-top:8px;font-weight:300;}
+
+/* Result */
+.result-top{background:var(--white);border-radius:24px;box-shadow:0 4px 28px rgba(107,79,58,.1);margin-bottom:14px;overflow:hidden;}
+.result-sit-bar{background:var(--rose-l);padding:16px 24px;border-bottom:1px solid var(--line);}
+.result-sit-lbl{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--taupe);margin-bottom:5px;}
+.result-sit-txt{font-family:'Lora',serif;font-style:italic;font-size:15px;color:var(--brown);line-height:1.5;}
+.result-body{padding:26px;}
+.result-badge{display:inline-block;background:var(--rose-l);color:var(--rose-deep);font-size:10px;letter-spacing:.13em;text-transform:uppercase;padding:5px 12px;border-radius:99px;margin-bottom:14px;}
+.result-impulse{font-family:'Lora',serif;font-style:italic;font-size:clamp(17px,3.8vw,20px);color:var(--brown-d);line-height:1.65;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--line);}
+.result-q-lbl{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--taupe);margin-bottom:8px;}
+.result-q{font-family:'Lora',serif;font-style:italic;font-size:16px;color:var(--brown);line-height:1.65;margin-bottom:20px;}
+.result-action{background:var(--rose-l);border-radius:14px;padding:16px 18px;}
+.result-action-lbl{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--rose-deep);margin-bottom:6px;}
+.result-action-txt{font-size:14px;color:var(--brown);line-height:1.65;}
+
+/* Journal */
+.journal-box{background:var(--white);border-radius:24px;padding:24px 26px;margin-bottom:14px;box-shadow:0 2px 18px rgba(107,79,58,.07);border:1px solid var(--line);}
+.journal-lbl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--taupe);margin-bottom:6px;}
+.journal-title{font-family:'Lora',serif;font-size:17px;color:var(--brown-d);margin-bottom:4px;}
+.journal-sub{font-size:13px;color:var(--brown-l);font-weight:300;margin-bottom:14px;line-height:1.5;}
+.journal-input{width:100%;background:var(--cream);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;font-family:'Lora',serif;font-style:italic;font-size:14px;color:var(--brown-d);resize:none;min-height:100px;outline:none;transition:border-color .2s;line-height:1.65;}
+.journal-input::placeholder{color:var(--taupe);}
+.journal-input:focus{border-color:var(--rose-d);}
+.journal-btns{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;}
+.btn-copy{background:none;border:1.5px solid var(--rose-m);border-radius:99px;padding:9px 20px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--brown-l);cursor:pointer;transition:all .2s;}
+.btn-copy:hover{background:var(--rose-l);border-color:var(--rose-d);}
+.copy-confirm{display:none;font-size:13px;color:var(--rose-deep);font-family:'Lora',serif;font-style:italic;}
+
+/* Error */
+.error-box{background:#fff5f5;border:1.5px solid #f8c8c8;border-radius:16px;padding:20px 22px;margin-bottom:14px;font-size:14px;color:#8a4040;line-height:1.6;}
+
+/* CTA */
+.cta-box{border-radius:24px;padding:30px 26px;text-align:center;background:linear-gradient(145deg,var(--brown-d) 0%,#2e1a14 100%);position:relative;overflow:hidden;margin-bottom:14px;}
+.cta-box::before{content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;border-radius:50%;background:rgba(232,196,200,.07);}
+.cta-tag{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--rose-m);margin-bottom:12px;position:relative;z-index:1;}
+.cta-title{font-family:'Lora',serif;font-weight:400;font-size:clamp(19px,4vw,24px);color:var(--white);line-height:1.3;margin-bottom:10px;position:relative;z-index:1;}
+.cta-title em{font-style:italic;color:var(--rose-m);}
+.cta-desc{font-size:14px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:20px;position:relative;z-index:1;font-weight:300;}
+.cta-btn{display:inline-block;background:linear-gradient(135deg,var(--rose-m),var(--rose-deep));color:var(--white);text-decoration:none;border-radius:99px;padding:14px 32px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;box-shadow:0 6px 20px rgba(160,56,80,.38);transition:transform .2s;position:relative;z-index:1;}
+.cta-btn:hover{transform:translateY(-2px);}
+.cta-sub{font-size:12px;color:rgba(255,255,255,.35);margin-top:10px;position:relative;z-index:1;}
+
+/* Sarah bar */
+.sarah-bar{display:flex;align-items:center;gap:14px;background:var(--white);border-radius:18px;padding:16px 20px;border:1px solid var(--line);margin-bottom:18px;}
+.sarah-av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--rose-m),var(--rose-d));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.sarah-name{font-weight:500;font-size:14px;color:var(--brown-d);}
+.sarah-sub{font-size:12px;color:var(--taupe);font-weight:300;margin-top:2px;}
+
+/* Buttons */
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:24px;}
+.btn-back{background:none;border:none;font-size:13px;color:var(--taupe);cursor:pointer;font-family:'DM Sans',sans-serif;padding:8px 0;}
+.btn-back:hover{color:var(--brown-l);}
+.btn-primary{background:linear-gradient(135deg,var(--rose-d),var(--rose-deep));color:var(--white);border:none;border-radius:99px;padding:14px 30px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;box-shadow:0 4px 18px rgba(160,56,80,.28);transition:all .2s;opacity:.38;pointer-events:none;}
+.btn-primary.ready{opacity:1;pointer-events:all;}
+.btn-primary.ready:hover{transform:translateY(-2px);}
+.btn-restart{background:none;border:1.5px solid var(--line);border-radius:99px;padding:11px 28px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--brown-l);cursor:pointer;transition:all .2s;display:block;margin:0 auto;}
+.btn-restart:hover{border-color:var(--rose-m);background:var(--rose-l);}
+
+@media(max-width:480px){
+  .wrap{padding:28px 16px 70px;}
+  .result-body,.journal-box,.cta-box{padding:20px 18px;}
+  .result-sit-bar{padding:14px 18px;}
+  .btn-next{padding:16px 24px;font-size:15px;width:100%;}
+  .cta-btn{display:block;width:100%;text-align:center;padding:16px 20px;}
+  .legal-links a{font-size:13px;}
+  .choice{padding:14px 16px;}
+  .btn-restart{width:100%;}
+  .nav{gap:10px;}
+  .anchor-box{padding:16px 18px;}
+}
+
+.legal-footer{
+  text-align:center;
+  padding:32px 22px 20px;
+  border-top:1px solid var(--line);
+  margin-top:32px;
+}
+.legal-links{
+  display:flex;justify-content:center;align-items:center;
+  gap:10px;flex-wrap:wrap;margin-bottom:10px;
+}
+.legal-links a{
+  font-size:12px;color:var(--taupe);text-decoration:none;
+  font-family:'DM Sans',sans-serif;font-weight:300;
+  transition:color .2s;
+}
+.legal-links a:hover{color:var(--rose-deep);}
+.legal-links span{font-size:12px;color:var(--line);}
+.legal-insta{
+  font-size:12px;color:var(--taupe);
+  font-family:'DM Sans',sans-serif;font-weight:300;
+}
+.legal-insta a{color:var(--taupe);text-decoration:none;}
+.legal-insta a:hover{color:var(--rose-deep);}
+</style>
+</head>
+<body>
+<div class="blob blob-tr"></div>
+<div class="blob blob-bl"></div>
+<div class="wrap">
+
+<!-- INTRO -->
+<div class="intro">
+  <div class="intro-eye">Von Sarah &nbsp;·&nbsp; @digitalstart.mitsarah</div>
+  <h1 class="intro-title">Dein<br><em>Notfall-Kompass.</em></h1>
+  <div class="intro-rule"></div>
+  <p class="intro-sub">Beschreib kurz was gerade los ist, und bekomm einen persönlichen Impuls, eine Frage und eine Mini-Aufgabe, die genau dazu passen.</p>
+</div>
+
+<!-- ANCHOR -->
+<div class="anchor-box">
+  <div class="anchor-lbl">Dein Satz für heute</div>
+  <div class="anchor-txt" id="anchorTxt"></div>
+  <button class="anchor-btn" onclick="newAnchor()">↻ Anderen Satz</button>
+</div>
+
+<!-- S0: SITUATION EINGEBEN -->
+<div class="screen active" id="s0">
+  <div class="step-lbl">Schritt 1 von 1</div>
+  <h2 class="sec-title">Was ist gerade<br><em>los bei dir?</em></h2>
+  <p class="sec-sub">Schreib einfach drauf los. Kein perfekter Satz nötig. Je ehrlicher desto besser.</p>
+  <label class="input-lbl">In meinen eigenen Worten...</label>
+  <textarea class="sit-input" id="sitInput" placeholder="Ich hab heute wieder Ja gesagt obwohl ich eigentlich total am Limit bin und..." rows="5" oninput="onInput()"></textarea>
+  <div class="char-count"><span id="charCount">0</span> Zeichen</div>
+  <div class="nav">
+    <div></div>
+    <button class="btn-primary" id="btnGo" onclick="getImpuls()">Meinen Impuls holen →</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="screen" id="sLoad">
+  <div class="loading-box">
+    <div class="loading-dots"><span></span><span></span><span></span></div>
+    <div class="loading-txt">Sarah liest deine Situation...</div>
+    <div class="loading-sub">Einen Moment, dein persönlicher Impuls wird gerade erstellt.</div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="sResult">
+  <div class="result-top">
+    <div class="result-sit-bar">
+      <div class="result-sit-lbl">Was du gerade beschrieben hast</div>
+      <div class="result-sit-txt" id="rSit"></div>
+    </div>
+    <div class="result-body">
+      <div class="result-badge">🌸 Dein persönlicher Impuls</div>
+      <div class="result-impulse" id="rImpulse"></div>
+      <div class="result-q-lbl">Deine Frage für jetzt</div>
+      <div class="result-q" id="rQ"></div>
+      <div class="result-action">
+        <div class="result-action-lbl">Deine Mini-Aufgabe für heute</div>
+        <div class="result-action-txt" id="rA"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="journal-box">
+    <div class="journal-lbl">Dein Reflexions-Raum</div>
+    <div class="journal-title">Was löst das bei dir aus?</div>
+    <p class="journal-sub">Schreib was der Impuls berührt hat. Nur für dich, kein richtiger Satz nötig.</p>
+    <textarea class="journal-input" id="journalTxt" placeholder="Was ich gerade fühle oder denke..."></textarea>
+    <div class="journal-btns">
+      <button class="btn-copy" onclick="copyJournal()">💾 Speichern &amp; kopieren</button>
+      <div class="copy-confirm" id="copyOK">Kopiert! Du kannst es jetzt einfügen.</div>
+    </div>
+  </div>
+
+  <div id="errorBox" class="error-box" style="display:none;"></div>
+
+  <div class="cta-box">
+    <div class="cta-tag">🌸 Dein nächster Schritt</div>
+    <div class="cta-title">Tiefer gehen mit dem<br><em>People Pleaser Workbook</em></div>
+    <p class="cta-desc">Was du gerade gespürt hast, hat einen Ursprung. Das Workbook begleitet dich dabei ihn zu finden, ehrlich, ohne Druck, in deinem Tempo.</p>
+    <a href="https://www.facelessmitsarah.at/p/MMtdpt" target="_blank" class="cta-btn">Zum Workbook →</a>
+    <p class="cta-sub">PDF kostenlos dabei · Sofort verfügbar</p>
+  </div>
+
+  <div class="sarah-bar">
+    <div class="sarah-av">🌸</div>
+    <div>
+      <div class="sarah-name">Sarah Plainer</div>
+      <div class="sarah-sub">Mama, Overthinkerin &amp; People Pleaserin · @digitalstart.mitsarah</div>
+    </div>
+  </div>
+
+  <button class="btn-restart" onclick="restart()">↺ Neue Situation beschreiben</button>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+// Anchor sentences
+var anchors=["Du musst nicht erst fertig sein, um anzufangen.","Es ist okay, heute nur das Nötigste zu tun.","Du bist nicht falsch. Du hast nur gelernt, dich hintenanzustellen.","Was gelernt wurde, kann verlernt werden.","Du darfst Nein sagen, auch ohne Erklärung.","Grenzen setzen ist kein Egoismus. Es ist Selbstrespekt.","Deine Erschöpfung ist kein Zeichen von Schwäche.","Du bist mehr als das, was du für andere tust.","Merken ist der erste Schritt. Er zählt.","Du hast das Recht, Raum einzunehmen.","Nicht jeder Stillstand ist ein Rückschritt.","Es reicht, heute eine einzige Sache für dich zu tun.","Deine Bedürfnisse sind genauso wichtig wie die der anderen.","Das Nein das du nicht sagst, sammelt sich irgendwo an.","Du bist gerade mittendrin. Das ist kein Versagen, das ist der Weg.","Kleine Entscheidungen für dich selbst bauen sich auf.","Du darfst einfach da sein, ohne zu funktionieren.","Perfektion ist nicht das Ziel. Ehrlichkeit schon.","Du bist nicht alleine damit, auch wenn es sich so anfühlt.","Auch ein kleines Ja zu dir selbst zählt.","Dein Körper weiß es oft vor deinem Kopf.","Was du brauchst, darf ausgesprochen werden.","Du bist genug. Genau so wie du gerade bist.","Es ist okay, heute einfach inne zu halten.","Heute reicht es, eine einzige ehrliche Frage zu stellen.","Was du heute spürst, ist real. Es verdient Aufmerksamkeit.","Du hast das Recht, Hilfe anzunehmen.","Veränderung passiert durch kleine, tägliche Entscheidungen.","Selbstzweifel kommen gerne wenn wir leer sind. Sie lügen dann besonders.","Du kennst dich am besten. Auch wenn es sich gerade nicht so anfühlt."];
+var lastA=-1;
+function newAnchor(){var i;do{i=Math.floor(Math.random()*anchors.length);}while(i===lastA);lastA=i;document.getElementById('anchorTxt').textContent=anchors[i];}
+newAnchor();
+
+function onInput(){
+  var v=document.getElementById('sitInput').value;
+  document.getElementById('charCount').textContent=v.length;
+  var btn=document.getElementById('btnGo');
+  if(v.trim().length>=15)btn.classList.add('ready');
+  else btn.classList.remove('ready');
+}
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+async function getImpuls(){
+  var sit=document.getElementById('sitInput').value.trim();
+  if(sit.length<15)return;
+
+  go('sLoad');
+
+  try{
+    var res=await fetch('/.netlify/functions/kompass',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({situation:sit})
+    });
+
+    if(!res.ok){
+      var errTxt=await res.text();
+      showError('Etwas hat nicht geklappt. Versuch es nochmal. ('+errTxt+')');
+      return;
+    }
+
+    var data=await res.json();
+    document.getElementById('rSit').textContent=sit.length>120?sit.substring(0,120)+'...':sit;
+    document.getElementById('rImpulse').textContent=data.impuls;
+    document.getElementById('rQ').textContent=data.frage;
+    document.getElementById('rA').textContent=data.aufgabe;
+    document.getElementById('journalTxt').value='';
+    document.getElementById('copyOK').style.display='none';
+    document.getElementById('errorBox').style.display='none';
+    go('sResult');
+
+  }catch(e){
+    showError('Verbindungsfehler. Bitte prüfe deine Internetverbindung und versuch es nochmal.');
+  }
+}
+
+function showError(msg){
+  go('s0');
+  var eb=document.getElementById('errorBox');
+  eb.textContent=msg;
+  eb.style.display='block';
+}
+
+function copyJournal(){
+  var txt=document.getElementById('journalTxt').value.trim();
+  if(!txt)return;
+  var sit=document.getElementById('rSit').textContent;
+  var q=document.getElementById('rQ').textContent;
+  var full='🌸 Notfall-Kompass Reflexion\n'+'─────────────────\n'+'Meine Situation: '+sit+'\n\n'+'Frage an mich: '+q+'\n\n'+'Meine Gedanken:\n'+txt+'\n\n'+', via Notfall-Kompass · Sarah Plainer · digitalstart.mitsarah';
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(full).then(function(){
+      var c=document.getElementById('copyOK');
+      c.style.display='block';
+      setTimeout(function(){c.style.display='none';},3000);
+    });
+  }
+}
+
+function restart(){
+  document.getElementById('sitInput').value='';
+  document.getElementById('charCount').textContent='0';
+  document.getElementById('btnGo').classList.remove('ready');
+  document.getElementById('errorBox').style.display='none';
+  newAnchor();
+  go('s0');
+}
+</script>
+
+<div class="legal-footer">
+  <div class="legal-links">
+    <a href="https://www.facelessmitsarah.at/legal/240244326/contact" target="_blank">Impressum</a>
+    <span>·</span>
+    <a href="https://www.facelessmitsarah.at/legal/240244326/privacy" target="_blank">Datenschutz</a>
+    <span>·</span>
+    <a href="https://www.facelessmitsarah.at/legal/240244326/tos" target="_blank">AGB</a>
+    <span>·</span>
+    <a href="https://www.facelessmitsarah.at/legal/240244326/tos" target="_blank">Widerrufsrecht</a>
+  </div>
+  <div class="legal-insta">
+    <a href="https://www.instagram.com/digitalstart.mitsarah/" target="_blank">@digitalstart.mitsarah</a>
+    &nbsp;·&nbsp; © 2025 Sarah Plainer
+  </div>
+</div>
+</body>
+</html>
