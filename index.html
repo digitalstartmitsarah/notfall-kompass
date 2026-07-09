@@ -157,6 +157,27 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
 }
 .legal-insta a{color:var(--taupe);text-decoration:none;}
 .legal-insta a:hover{color:var(--rose-deep);}
+
+.feedback-box{
+  background:var(--white);border-radius:24px;
+  padding:24px 26px;margin-bottom:14px;
+  box-shadow:0 2px 18px rgba(107,79,58,.07);
+  border:1px solid var(--line);
+}
+.feedback-lbl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--taupe);margin-bottom:6px;}
+.feedback-title{font-family:'Lora',serif;font-size:17px;color:var(--brown-d);margin-bottom:4px;}
+.feedback-sub{font-size:13px;color:var(--brown-l);font-weight:300;margin-bottom:16px;line-height:1.5;}
+.feedback-stars{display:flex;gap:8px;margin-bottom:14px;}
+.star{font-size:28px;cursor:pointer;opacity:.3;transition:all .2s;user-select:none;}
+.star.active{opacity:1;}
+.star:hover{transform:scale(1.15);}
+.feedback-input{width:100%;background:var(--cream);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;font-family:'Lora',serif;font-style:italic;font-size:14px;color:var(--brown-d);resize:none;min-height:80px;outline:none;transition:border-color .2s;line-height:1.65;}
+.feedback-input::placeholder{color:var(--taupe);}
+.feedback-input:focus{border-color:var(--rose-d);}
+.feedback-send{margin-top:12px;background:linear-gradient(135deg,var(--rose-d),var(--rose-deep));color:var(--white);border:none;border-radius:99px;padding:12px 26px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;opacity:.4;pointer-events:none;}
+.feedback-send.ready{opacity:1;pointer-events:all;}
+.feedback-send.ready:hover{transform:translateY(-1px);}
+.feedback-thanks{display:none;text-align:center;padding:16px;font-family:'Lora',serif;font-style:italic;font-size:16px;color:var(--rose-deep);}
 </style>
 </head>
 <body>
@@ -351,7 +372,69 @@ function restart(){
   newAnchor();
   go('s0');
 }
+
+var starRating = 0;
+function rateStar(n){
+  starRating = n;
+  document.querySelectorAll('.star').forEach(function(s,i){
+    s.classList.toggle('active', i < n);
+  });
+  document.getElementById('feedbackSend').classList.add('ready');
+}
+function chkFeedback(){
+  if(starRating > 0) document.getElementById('feedbackSend').classList.add('ready');
+}
+async function sendFeedback(){
+  var rating = starRating;
+  var text = document.getElementById('feedbackTxt').value.trim();
+  if(rating === 0) return;
+
+  var stars = '';
+  for(var i=0;i<rating;i++) stars += '🌸';
+
+  var situation = document.getElementById('rSit') ? document.getElementById('rSit').textContent : 'nicht angegeben';
+  var impuls = document.getElementById('rImpulse') ? document.getElementById('rImpulse').textContent : '';
+
+  try {
+    await fetch('https://formspree.io/f/xqevvanj', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        bewertung: stars + ' (' + rating + '/5)',
+        kommentar: text || 'kein Kommentar',
+        situation: situation,
+        impuls: impuls
+      })
+    });
+  } catch(e) { /* zeige Danke auch wenn Senden fehlschlägt */ }
+
+  var box = document.getElementById('feedbackBox');
+  ['feedback-lbl','feedback-title','feedback-sub'].forEach(function(c){
+    var el = box.querySelector('.'+c);
+    if(el) el.style.display='none';
+  });
+  document.getElementById('stars').style.display='none';
+  document.getElementById('feedbackTxt').style.display='none';
+  document.getElementById('feedbackSend').style.display='none';
+  document.getElementById('feedbackThanks').style.display='block';
+}
 </script>
+
+<div class="feedback-box" id="feedbackBox">
+  <div class="feedback-lbl">Von Sarah</div>
+  <div class="feedback-title">Hat dich das heute berührt?</div>
+  <p class="feedback-sub">Ich freue mich immer wenn ich höre wie das Tool bei euch ankommt. Wenn du magst, schreib mir kurz was du mitgenommen hast — ich lese jede Nachricht persönlich und teile sie manchmal (anonym) auf Instagram, damit andere Frauen wissen dass sie nicht alleine damit sind.</p>
+  <div class="feedback-stars" id="stars">
+    <span class="star" onclick="rateStar(1)">🌸</span>
+    <span class="star" onclick="rateStar(2)">🌸</span>
+    <span class="star" onclick="rateStar(3)">🌸</span>
+    <span class="star" onclick="rateStar(4)">🌸</span>
+    <span class="star" onclick="rateStar(5)">🌸</span>
+  </div>
+  <textarea class="feedback-input" id="feedbackTxt" placeholder="Was ich heute mitnehme..." oninput="chkFeedback()"></textarea>
+  <button class="feedback-send" id="feedbackSend" onclick="sendFeedback()">Teilen →</button>
+  <div class="feedback-thanks" id="feedbackThanks">Danke, das bedeutet mir wirklich viel. Ich freue mich über jede Nachricht. 🌸 — Sarah</div>
+</div>
 
 <div class="legal-footer">
   <div class="legal-links">
