@@ -12,6 +12,7 @@
   --rose-d:#d4a0a8;--rose-deep:#a03850;
   --brown:#6b4f3a;--brown-d:#4a3228;--brown-l:#8a6a55;
   --taupe:#c4b0a0;--line:#e0d8d0;--white:#fff;
+  --sage:#8a9b7c;--sage-d:#5f7350;--sage-l:#eef1ea;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-d);min-height:100vh;overflow-x:hidden;}
@@ -77,6 +78,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
 .result-action{background:var(--rose-l);border-radius:14px;padding:16px 18px;}
 .result-action-lbl{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--rose-deep);margin-bottom:6px;}
 .result-action-txt{font-size:14px;color:var(--brown);line-height:1.65;}
+
+/* Hormon-Box */
+.hormon-box{background:var(--white);border-radius:24px;padding:24px 26px;margin-bottom:14px;box-shadow:0 2px 18px rgba(107,79,58,.07);border:1px solid var(--line);position:relative;overflow:hidden;}
+.hormon-box::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--sage),var(--sage-d));}
+.hormon-badge{display:inline-block;background:var(--sage-l);color:var(--sage-d);font-size:10px;letter-spacing:.13em;text-transform:uppercase;padding:5px 12px;border-radius:99px;margin-bottom:12px;}
+.hormon-txt{font-family:'Lora',serif;font-style:italic;font-size:15px;color:var(--brown-d);line-height:1.7;}
+
+/* Ringana-Box */
+.ringana-box{background:var(--sage-l);border-radius:24px;padding:22px 26px;margin-bottom:14px;border:1px solid #dde3d6;}
+.ringana-badge{display:inline-block;background:var(--white);color:var(--sage-d);font-size:10px;letter-spacing:.13em;text-transform:uppercase;padding:5px 12px;border-radius:99px;margin-bottom:12px;}
+.ringana-product{font-family:'Lora',serif;font-size:16px;color:var(--brown-d);font-weight:600;margin-bottom:6px;}
+.ringana-txt{font-size:14px;color:var(--brown);line-height:1.65;margin-bottom:14px;font-weight:300;}
+.ringana-link{display:inline-block;background:none;border:1.5px solid var(--sage-d);color:var(--sage-d);text-decoration:none;border-radius:99px;padding:9px 20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;transition:all .2s;}
+.ringana-link:hover{background:var(--sage-d);color:var(--white);}
+.ringana-disclaimer{font-size:11px;color:var(--taupe);margin-top:12px;font-weight:300;line-height:1.5;}
 
 /* Journal */
 .journal-box{background:var(--white);border-radius:24px;padding:24px 26px;margin-bottom:14px;box-shadow:0 2px 18px rgba(107,79,58,.07);border:1px solid var(--line);}
@@ -242,6 +258,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
     </div>
   </div>
 
+  <div class="hormon-box" id="hormonBox" style="display:none;">
+    <div class="hormon-badge">🌿 Was dein Körper hier auch mitspricht</div>
+    <div class="hormon-txt" id="rHormon"></div>
+  </div>
+
+  <div class="ringana-box" id="ringanaBox" style="display:none;">
+    <div class="ringana-badge">🌱 Was mir persönlich hilft</div>
+    <div class="ringana-product" id="ringanaProduct"></div>
+    <div class="ringana-txt" id="ringanaTxt"></div>
+    <a href="https://4911647.ringana.com" target="_blank" class="ringana-link" id="ringanaLink">Mehr dazu →</a>
+    <div class="ringana-disclaimer">Das ist meine ganz persönliche Erfahrung, kein medizinischer Rat und kein Ersatz für ärztliche Beratung.</div>
+  </div>
+
   <div class="journal-box">
     <div class="journal-lbl">Dein Reflexions-Raum</div>
     <div class="journal-title">Was löst das bei dir aus?</div>
@@ -290,6 +319,52 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
 <script>
 // Anchor sentences
 var anchors=["Du musst nicht erst fertig sein, um anzufangen.","Es ist okay, heute nur das Nötigste zu tun.","Du bist nicht falsch. Du hast nur gelernt, dich hintenanzustellen.","Was gelernt wurde, kann verlernt werden.","Du darfst Nein sagen, auch ohne Erklärung.","Grenzen setzen ist kein Egoismus. Es ist Selbstrespekt.","Deine Erschöpfung ist kein Zeichen von Schwäche.","Du bist mehr als das, was du für andere tust.","Merken ist der erste Schritt. Er zählt.","Du hast das Recht, Raum einzunehmen.","Nicht jeder Stillstand ist ein Rückschritt.","Es reicht, heute eine einzige Sache für dich zu tun.","Deine Bedürfnisse sind genauso wichtig wie die der anderen.","Das Nein das du nicht sagst, sammelt sich irgendwo an.","Du bist gerade mittendrin. Das ist kein Versagen, das ist der Weg.","Kleine Entscheidungen für dich selbst bauen sich auf.","Du darfst einfach da sein, ohne zu funktionieren.","Perfektion ist nicht das Ziel. Ehrlichkeit schon.","Du bist nicht alleine damit, auch wenn es sich so anfühlt.","Auch ein kleines Ja zu dir selbst zählt.","Dein Körper weiß es oft vor deinem Kopf.","Was du brauchst, darf ausgesprochen werden.","Du bist genug. Genau so wie du gerade bist.","Es ist okay, heute einfach inne zu halten.","Heute reicht es, eine einzige ehrliche Frage zu stellen.","Was du heute spürst, ist real. Es verdient Aufmerksamkeit.","Du hast das Recht, Hilfe anzunehmen.","Veränderung passiert durch kleine, tägliche Entscheidungen.","Selbstzweifel kommen gerne wenn wir leer sind. Sie lügen dann besonders.","Du kennst dich am besten. Auch wenn es sich gerade nicht so anfühlt."];
+// Ringana-Produktpool, sortiert nach Kategorie.
+var RINGANA_POOL={
+  stress:{
+    name:'RINGANA CAPS moodoo',
+    erfahrung:'Sie helfen mir vor allem bei Stress und Nervosität, beruhigen mich extrem in Stresssituationen und haben mir geholfen, ruhiger in den Tag zu starten.',
+    link:'https://4911647.ringana.com/produkt/caps-moodoo/'
+  },
+  schlaf:{
+    name:'RINGANA isi',
+    erfahrung:'Der Drink hat mir vor allem geholfen, gut einzuschlafen, ich hab geschlafen wie ein Murmeltier. Er beruhigt mich extrem und hilft mir auch in akuten Situationen, wenn ich nervös bin.',
+    link:'https://4911647.ringana.com/produkt/ringanaisi/'
+  },
+  zyklus_hormon:{
+    name:'RINGANA CAPS fem',
+    erfahrung:'Mega geeignet gegen PMS-Symptome, hilft auch enorm bei Regelschmerzen. An den Tagen selbst nehm ich die doppelte Dosis, das hat mir brutal geholfen.',
+    link:'https://4911647.ringana.com/produkt/caps-fem/'
+  },
+  allgemein:{
+    name:'RINGANA isi',
+    erfahrung:'Mein Alltagsfavorit. Er hilft mir tagsüber in akuten Situationen wenn ich nervös bin, gerade bei hohem Puls und der Angst, dass es schlimmer wird.',
+    link:'https://4911647.ringana.com/produkt/ringanaisi/'
+  }
+};
+
+function showRingana(kategorie,hormonTxt){
+  // Hormon-Block
+  var hb=document.getElementById('hormonBox');
+  if(hormonTxt){
+    document.getElementById('rHormon').textContent=hormonTxt;
+    hb.style.display='block';
+  }else{
+    hb.style.display='none';
+  }
+  // Ringana-Block
+  var rb=document.getElementById('ringanaBox');
+  var produkt=RINGANA_POOL[kategorie]||RINGANA_POOL.allgemein;
+  if(produkt){
+    document.getElementById('ringanaProduct').textContent=produkt.name;
+    document.getElementById('ringanaTxt').textContent=produkt.erfahrung;
+    document.getElementById('ringanaLink').href=produkt.link;
+    rb.style.display='block';
+  }else{
+    rb.style.display='none';
+  }
+}
+
 var lastA=-1;
 function newAnchor(){var i;do{i=Math.floor(Math.random()*anchors.length);}while(i===lastA);lastA=i;document.getElementById('anchorTxt').textContent=anchors[i];}
 newAnchor();
@@ -332,6 +407,7 @@ async function getImpuls(){
     document.getElementById('rImpulse').textContent=data.impuls;
     document.getElementById('rQ').textContent=data.frage;
     document.getElementById('rA').textContent=data.aufgabe;
+    showRingana(data.kategorie,data.hormon);
     document.getElementById('journalTxt').value='';
     document.getElementById('copyOK').style.display='none';
     document.getElementById('errorBox').style.display='none';
