@@ -93,6 +93,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
 .ringana-link{display:inline-block;background:none;border:1.5px solid var(--sage-d);color:var(--sage-d);text-decoration:none;border-radius:99px;padding:9px 20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;transition:all .2s;}
 .ringana-link:hover{background:var(--sage-d);color:var(--white);}
 .ringana-disclaimer{font-size:11px;color:var(--taupe);margin-top:12px;font-weight:300;line-height:1.5;}
+.tool-disclaimer{font-size:12px;color:var(--brown-l);margin-top:18px;font-weight:300;line-height:1.6;max-width:420px;margin-left:auto;margin-right:auto;text-align:center;}
+.tool-disclaimer a{color:var(--rose-deep);text-decoration:underline;}
+
+/* Reflexion per Mail */
+.journal-email-lbl{font-size:12px;color:var(--brown-l);margin:16px 0 8px;font-weight:400;line-height:1.5;}
+.journal-email-row{display:flex;gap:10px;flex-wrap:wrap;}
+.journal-email-input{flex:1;min-width:180px;border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--brown-d);background:var(--cream);}
+.journal-email-input:focus{outline:none;border-color:var(--rose-d);}
+.journal-email-input::placeholder{color:var(--taupe);}
+.btn-send{background:var(--rose-deep);color:var(--white);border:none;border-radius:99px;padding:13px 24px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .2s;white-space:nowrap;}
+.btn-send:hover{opacity:.9;}
+.btn-send:disabled{opacity:.5;cursor:default;}
+.journal-consent{font-size:11px;color:var(--taupe);margin-top:10px;line-height:1.5;}
+.send-confirm{display:none;font-size:13px;color:var(--rose-deep);margin-top:12px;font-weight:500;}
+.send-error{display:none;font-size:12px;color:#a04040;margin-top:10px;}
 
 /* Journal */
 .journal-box{background:var(--white);border-radius:24px;padding:24px 26px;margin-bottom:14px;box-shadow:0 2px 18px rgba(107,79,58,.07);border:1px solid var(--line);}
@@ -228,6 +243,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
     <div></div>
     <button class="btn-primary" id="btnGo" onclick="getImpuls()">Meinen Impuls holen →</button>
   </div>
+  <p class="tool-disclaimer">Dieser Kompass ersetzt keine psychologische Beratung oder Therapie. Er bietet einen Impuls zur Selbstreflexion, keine Diagnose oder Behandlung. Falls du dich in einer akuten Krise befindest, wende dich bitte an die <a href="tel:142">Telefonseelsorge (142, kostenlos & anonym)</a> oder eine Fachperson deines Vertrauens.</p>
 </div>
 
 <!-- LOADING -->
@@ -276,10 +292,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
     <div class="journal-title">Was löst das bei dir aus?</div>
     <p class="journal-sub">Schreib was der Impuls berührt hat. Nur für dich, kein richtiger Satz nötig.</p>
     <textarea class="journal-input" id="journalTxt" placeholder="Was ich gerade fühle oder denke..."></textarea>
-    <div class="journal-btns">
-      <button class="btn-copy" onclick="copyJournal()">💾 Speichern &amp; kopieren</button>
-      <div class="copy-confirm" id="copyOK">Kopiert! Du kannst es jetzt einfügen.</div>
+    <div class="journal-email-lbl">Willst du das nicht verlieren? Trag deine Mail ein, dann schick ich dir deine Reflexion zu.</div>
+    <div class="journal-email-row">
+      <input type="email" class="journal-email-input" id="journalEmail" placeholder="deine@email.at">
+      <button class="btn-send" id="btnSend" onclick="sendReflection()">Reflexion an mich senden</button>
     </div>
+    <div class="journal-consent">Mit dem Absenden erlaubst du mir, dir diese Reflexion per Mail zu schicken. Kein Spam, jederzeit abmeldbar.</div>
+    <div class="send-confirm" id="sendOK">Unterwegs zu dir! Schau gleich in dein Postfach. 🌸</div>
+    <div class="send-error" id="sendErr">Hat leider nicht geklappt, magst du es nochmal versuchen?</div>
   </div>
 
   <div id="errorBox" class="error-box" style="display:none;"></div>
@@ -425,19 +445,63 @@ function showError(msg){
   eb.style.display='block';
 }
 
-function copyJournal(){
+// WICHTIG FÜR SARAH: Trag hier deine eigene Formspree-Form-ID für die Reflexionen ein
+// (separates Formular, nicht die vom Hauptformular des Kompass).
+var REFLEXION_FORM_ID = 'DEINE_FORM_ID';
+
+function sendReflection(){
   var txt=document.getElementById('journalTxt').value.trim();
-  if(!txt)return;
+  var email=document.getElementById('journalEmail').value.trim();
+  var okBox=document.getElementById('sendOK');
+  var errBox=document.getElementById('sendErr');
+  var btn=document.getElementById('btnSend');
+  okBox.style.display='none';
+  errBox.style.display='none';
+
+  if(!txt){
+    errBox.textContent='Schreib kurz was du fühlst, bevor du sendest.';
+    errBox.style.display='block';
+    return;
+  }
+  var emailOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(!emailOk){
+    errBox.textContent='Magst du eine gültige Mail-Adresse eintragen?';
+    errBox.style.display='block';
+    return;
+  }
+
   var sit=document.getElementById('rSit').textContent;
   var q=document.getElementById('rQ').textContent;
-  var full='🌸 Notfall-Kompass Reflexion\n'+'─────────────────\n'+'Meine Situation: '+sit+'\n\n'+'Frage an mich: '+q+'\n\n'+'Meine Gedanken:\n'+txt+'\n\n'+', via Notfall-Kompass · Sarah Plainer · digitalstart.mitsarah';
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(full).then(function(){
-      var c=document.getElementById('copyOK');
-      c.style.display='block';
-      setTimeout(function(){c.style.display='none';},3000);
-    });
-  }
+
+  btn.disabled=true;
+  btn.textContent='Wird gesendet...';
+
+  fetch('https://formspree.io/f/'+REFLEXION_FORM_ID,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({
+      email:email,
+      situation:sit,
+      frage:q,
+      reflexion:txt,
+      quelle:'Notfall-Kompass'
+    })
+  }).then(function(res){
+    btn.disabled=false;
+    btn.textContent='Reflexion an mich senden';
+    if(res.ok){
+      okBox.style.display='block';
+      document.getElementById('journalEmail').value='';
+    }else{
+      errBox.textContent='Hat leider nicht geklappt, magst du es nochmal versuchen?';
+      errBox.style.display='block';
+    }
+  }).catch(function(){
+    btn.disabled=false;
+    btn.textContent='Reflexion an mich senden';
+    errBox.textContent='Hat leider nicht geklappt, magst du es nochmal versuchen?';
+    errBox.style.display='block';
+  });
 }
 
 function restart(){
