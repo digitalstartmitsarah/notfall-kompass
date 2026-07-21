@@ -97,31 +97,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
 .tool-disclaimer a{color:var(--rose-deep);text-decoration:underline;}
 .min-length-hint{font-size:13px;color:var(--rose-deep);margin-top:12px;text-align:center;font-weight:500;}
 
-/* Reflexion per Mail */
-.journal-email-lbl{font-size:12px;color:var(--brown-l);margin:16px 0 8px;font-weight:400;line-height:1.5;}
-.journal-email-row{display:flex;gap:10px;flex-wrap:wrap;}
-.journal-email-input{flex:1;min-width:180px;border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--brown-d);background:var(--cream);}
-.journal-email-input:focus{outline:none;border-color:var(--rose-d);}
-.journal-email-input::placeholder{color:var(--taupe);}
-.btn-send{background:var(--rose-deep);color:var(--white);border:none;border-radius:99px;padding:13px 24px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .2s;white-space:nowrap;}
-.btn-send:hover{opacity:.9;}
-.btn-send:disabled{opacity:.5;cursor:default;}
-.journal-consent{font-size:11px;color:var(--taupe);margin-top:10px;line-height:1.5;}
-.send-confirm{display:none;font-size:13px;color:var(--rose-deep);margin-top:12px;font-weight:500;}
-.send-error{display:none;font-size:12px;color:#a04040;margin-top:10px;}
+/* Mini-Übung */
+.uebung-box{background:var(--white);border-radius:24px;padding:24px 26px;margin-bottom:14px;box-shadow:0 2px 18px rgba(107,79,58,.07);border:1px solid var(--line);position:relative;overflow:hidden;}
+.uebung-box::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--rose-d),var(--rose-deep));}
+.uebung-lbl{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--rose-deep);margin-bottom:10px;font-weight:600;}
+.uebung-title{font-family:'Lora',serif;font-size:17px;color:var(--brown-d);margin-bottom:8px;font-weight:600;}
+.uebung-txt{font-size:14px;color:var(--brown);line-height:1.7;font-weight:300;}
 
-/* Journal */
-.journal-box{background:var(--white);border-radius:24px;padding:24px 26px;margin-bottom:14px;box-shadow:0 2px 18px rgba(107,79,58,.07);border:1px solid var(--line);}
-.journal-lbl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--taupe);margin-bottom:6px;}
-.journal-title{font-family:'Lora',serif;font-size:17px;color:var(--brown-d);margin-bottom:4px;}
-.journal-sub{font-size:13px;color:var(--brown-l);font-weight:300;margin-bottom:14px;line-height:1.5;}
-.journal-input{width:100%;background:var(--cream);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;font-family:'Lora',serif;font-style:italic;font-size:14px;color:var(--brown-d);resize:none;min-height:100px;outline:none;transition:border-color .2s;line-height:1.65;}
-.journal-input::placeholder{color:var(--taupe);}
-.journal-input:focus{border-color:var(--rose-d);}
-.journal-btns{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px;}
-.btn-copy{background:none;border:1.5px solid var(--rose-m);border-radius:99px;padding:9px 20px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--brown-l);cursor:pointer;transition:all .2s;}
-.btn-copy:hover{background:var(--rose-l);border-color:var(--rose-d);}
-.copy-confirm{display:none;font-size:13px;color:var(--rose-deep);font-family:'Lora',serif;font-style:italic;}
+/* Podcast */
+.podcast-box{background:var(--cream);border-radius:24px;padding:22px 26px;margin-bottom:14px;border:1px dashed var(--rose-m);text-align:center;}
+.podcast-lbl{font-size:13px;color:var(--brown-d);font-weight:600;margin-bottom:4px;}
+.podcast-txt{font-size:13px;color:var(--brown-l);margin-bottom:14px;font-weight:300;}
+.podcast-link{display:inline-block;background:none;border:1.5px solid var(--rose-deep);color:var(--rose-deep);text-decoration:none;border-radius:99px;padding:10px 22px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;transition:all .2s;}
+.podcast-link:hover{background:var(--rose-deep);color:var(--white);}
 
 /* Error */
 .error-box{background:#fff5f5;border:1.5px solid #f8c8c8;border-radius:16px;padding:20px 22px;margin-bottom:14px;font-size:14px;color:#8a4040;line-height:1.6;}
@@ -155,7 +143,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
 
 @media(max-width:480px){
   .wrap{padding:28px 16px 70px;}
-  .result-body,.journal-box,.cta-box{padding:20px 18px;}
+  .result-body,.uebung-box,.podcast-box,.cta-box{padding:20px 18px;}
   .result-sit-bar{padding:14px 18px;}
   .btn-next{padding:16px 24px;font-size:15px;width:100%;}
   .cta-btn{display:block;width:100%;text-align:center;padding:16px 20px;}
@@ -289,19 +277,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
     <div class="ringana-disclaimer">Das ist meine ganz persönliche Erfahrung, kein medizinischer Rat und kein Ersatz für ärztliche Beratung.</div>
   </div>
 
-  <div class="journal-box">
-    <div class="journal-lbl">Dein Reflexions-Raum</div>
-    <div class="journal-title">Was löst das bei dir aus?</div>
-    <p class="journal-sub">Schreib was der Impuls berührt hat. Nur für dich, kein richtiger Satz nötig.</p>
-    <textarea class="journal-input" id="journalTxt" placeholder="Was ich gerade fühle oder denke..."></textarea>
-    <div class="journal-email-lbl">Willst du das nicht verlieren? Trag deine Mail ein, dann schick ich dir deine Reflexion zu.</div>
-    <div class="journal-email-row">
-      <input type="email" class="journal-email-input" id="journalEmail" placeholder="deine@email.at">
-      <button class="btn-send" id="btnSend" onclick="sendReflection()">Reflexion an mich senden</button>
-    </div>
-    <div class="journal-consent">Mit dem Absenden erlaubst du mir, dir diese Reflexion per Mail zu schicken. Kein Spam, jederzeit abmeldbar.</div>
-    <div class="send-confirm" id="sendOK">Unterwegs zu dir! Schau gleich in dein Postfach. 🌸</div>
-    <div class="send-error" id="sendErr">Hat leider nicht geklappt, magst du es nochmal versuchen?</div>
+  <div class="uebung-box" id="uebungBox">
+    <div class="uebung-lbl">🌸 Für genau diesen Moment</div>
+    <div class="uebung-title" id="uebungTitle"></div>
+    <p class="uebung-txt" id="uebungTxt"></p>
+  </div>
+
+  <div class="podcast-box">
+    <div class="podcast-lbl">Willst du noch tiefer runterkommen?</div>
+    <p class="podcast-txt">Hier ist eine Podcast-Folge, die ich dafür mag.</p>
+    <a href="https://open.spotify.com/show/59Lffxv0KMOii1qKg5jMYQ?si=YhhzTS-ERza68F-fLCwx_g&utm_source=copy-link" target="_blank" class="podcast-link">🎧 Zum Podcast auf Spotify →</a>
   </div>
 
   <div id="errorBox" class="error-box" style="display:none;"></div>
@@ -439,10 +424,7 @@ async function getImpuls(){
     document.getElementById('rQ').textContent=data.frage;
     document.getElementById('rA').textContent=data.aufgabe;
     showRingana(data.kategorie,data.hormon);
-    document.getElementById('journalTxt').value='';
-    document.getElementById('journalEmail').value='';
-    document.getElementById('sendOK').style.display='none';
-    document.getElementById('sendErr').style.display='none';
+    showUebung(data.kategorie);
     document.getElementById('errorBox').style.display='none';
     go('sResult');
 
@@ -458,63 +440,32 @@ function showError(msg){
   eb.style.display='block';
 }
 
-// WICHTIG FÜR SARAH: Trag hier deine eigene Formspree-Form-ID für die Reflexionen ein
-// (separates Formular, nicht die vom Hauptformular des Kompass).
-var REFLEXION_FORM_ID = 'DEINE_FORM_ID';
-
-function sendReflection(){
-  var txt=document.getElementById('journalTxt').value.trim();
-  var email=document.getElementById('journalEmail').value.trim();
-  var okBox=document.getElementById('sendOK');
-  var errBox=document.getElementById('sendErr');
-  var btn=document.getElementById('btnSend');
-  okBox.style.display='none';
-  errBox.style.display='none';
-
-  if(!txt){
-    errBox.textContent='Schreib kurz was du fühlst, bevor du sendest.';
-    errBox.style.display='block';
-    return;
+// Mini-Übungen je Kategorie, passend zur jeweiligen Situation.
+var UEBUNG_POOL={
+  stress:{
+    title:'Box-Atmung',
+    txt:'4 Sekunden einatmen. 4 Sekunden halten. 4 Sekunden ausatmen. 4 Sekunden halten. Wiederhol das 4x. Merkst du, wie dein Puls langsamer wird?'
+  },
+  schlaf:{
+    title:'4-7-8-Atmung',
+    txt:'4 Sekunden einatmen durch die Nase. 7 Sekunden halten. 8 Sekunden lang und hörbar ausatmen durch den Mund. Das beruhigt dein Nervensystem in wenigen Atemzügen, egal ob es gerade ums Einschlafen oder um akute Unruhe geht.'
+  },
+  zyklus_hormon:{
+    title:'Hand auf den Bauch',
+    txt:'Leg eine Hand auf deinen Bauch. Atme tief hinein, spür wie sich deine Hand hebt und senkt. 5 Atemzüge lang, ohne etwas zu verändern, einfach nur spüren.'
+  },
+  allgemein:{
+    title:'3 tiefe Atemzüge',
+    txt:'Durch die Nase einatmen, durch den Mund lang ausatmen. Lass bei jedem Ausatmen bewusst die Schultern sinken.'
   }
-  var emailOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  if(!emailOk){
-    errBox.textContent='Magst du eine gültige Mail-Adresse eintragen?';
-    errBox.style.display='block';
-    return;
-  }
+};
 
-  var sit=document.getElementById('rSit').textContent;
-  var q=document.getElementById('rQ').textContent;
-
-  btn.disabled=true;
-  btn.textContent='Wird gesendet...';
-
-  fetch('https://formspree.io/f/'+REFLEXION_FORM_ID,{
-    method:'POST',
-    headers:{'Content-Type':'application/json','Accept':'application/json'},
-    body:JSON.stringify({
-      email:email,
-      situation:sit,
-      frage:q,
-      reflexion:txt,
-      quelle:'Notfall-Kompass'
-    })
-  }).then(function(res){
-    btn.disabled=false;
-    btn.textContent='Reflexion an mich senden';
-    if(res.ok){
-      okBox.style.display='block';
-      document.getElementById('journalEmail').value='';
-    }else{
-      errBox.textContent='Hat leider nicht geklappt, magst du es nochmal versuchen?';
-      errBox.style.display='block';
-    }
-  }).catch(function(){
-    btn.disabled=false;
-    btn.textContent='Reflexion an mich senden';
-    errBox.textContent='Hat leider nicht geklappt, magst du es nochmal versuchen?';
-    errBox.style.display='block';
-  });
+function showUebung(kategorie){
+  var box=document.getElementById('uebungBox');
+  var u=UEBUNG_POOL[kategorie]||UEBUNG_POOL.allgemein;
+  document.getElementById('uebungTitle').textContent=u.title;
+  document.getElementById('uebungTxt').textContent=u.txt;
+  box.style.display='block';
 }
 
 function restart(){
