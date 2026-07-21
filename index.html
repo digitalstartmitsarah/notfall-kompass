@@ -95,6 +95,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
 .ringana-disclaimer{font-size:11px;color:var(--taupe);margin-top:12px;font-weight:300;line-height:1.5;}
 .tool-disclaimer{font-size:12px;color:var(--brown-l);margin-top:18px;font-weight:300;line-height:1.6;max-width:420px;margin-left:auto;margin-right:auto;text-align:center;}
 .tool-disclaimer a{color:var(--rose-deep);text-decoration:underline;}
+.min-length-hint{font-size:13px;color:var(--rose-deep);margin-top:12px;text-align:center;font-weight:500;}
 
 /* Reflexion per Mail */
 .journal-email-lbl{font-size:12px;color:var(--brown-l);margin:16px 0 8px;font-weight:400;line-height:1.5;}
@@ -243,6 +244,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
     <div></div>
     <button class="btn-primary" id="btnGo" onclick="getImpuls()">Meinen Impuls holen →</button>
   </div>
+  <p class="min-length-hint" id="minLengthHint" style="display:none;">Schreib noch ein bisschen mehr, damit ich dir wirklich helfen kann (mind. 15 Zeichen).</p>
   <p class="tool-disclaimer">Dieser Kompass ersetzt keine psychologische Beratung oder Therapie. Er bietet einen Impuls zur Selbstreflexion, keine Diagnose oder Behandlung. Falls du dich in einer akuten Krise befindest, wende dich bitte an die <a href="tel:142">Telefonseelsorge (142, kostenlos & anonym)</a> oder eine Fachperson deines Vertrauens.</p>
 </div>
 
@@ -393,7 +395,10 @@ function onInput(){
   var v=document.getElementById('sitInput').value;
   document.getElementById('charCount').textContent=v.length;
   var btn=document.getElementById('btnGo');
-  if(v.trim().length>=15)btn.classList.add('ready');
+  if(v.trim().length>=15){
+    btn.classList.add('ready');
+    document.getElementById('minLengthHint').style.display='none';
+  }
   else btn.classList.remove('ready');
 }
 
@@ -405,7 +410,13 @@ function go(id){
 
 async function getImpuls(){
   var sit=document.getElementById('sitInput').value.trim();
-  if(sit.length<15)return;
+  if(sit.length<15){
+    var hint=document.getElementById('minLengthHint');
+    hint.style.display='block';
+    document.getElementById('sitInput').focus();
+    return;
+  }
+  document.getElementById('minLengthHint').style.display='none';
 
   go('sLoad');
 
@@ -429,7 +440,9 @@ async function getImpuls(){
     document.getElementById('rA').textContent=data.aufgabe;
     showRingana(data.kategorie,data.hormon);
     document.getElementById('journalTxt').value='';
-    document.getElementById('copyOK').style.display='none';
+    document.getElementById('journalEmail').value='';
+    document.getElementById('sendOK').style.display='none';
+    document.getElementById('sendErr').style.display='none';
     document.getElementById('errorBox').style.display='none';
     go('sResult');
 
