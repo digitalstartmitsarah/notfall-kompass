@@ -187,6 +187,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
 .feedback-lbl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--taupe);margin-bottom:6px;}
 .feedback-title{font-family:'Lora',serif;font-size:17px;color:var(--brown-d);margin-bottom:4px;}
 .feedback-sub{font-size:13px;color:var(--brown-l);font-weight:300;margin-bottom:16px;line-height:1.5;}
+.feedback-hint{font-size:12px;color:var(--taupe);margin-bottom:8px;font-weight:400;}
+.feedback-rating-error{font-size:12px;color:var(--rose-deep);margin-top:-8px;margin-bottom:12px;font-weight:500;}
 .feedback-stars{display:flex;gap:8px;margin-bottom:14px;}
 .star{font-size:28px;cursor:pointer;opacity:.3;transition:all .2s;user-select:none;}
 .star.active{opacity:1;}
@@ -484,6 +486,7 @@ function rateStar(n){
     s.classList.toggle('active', i < n);
   });
   document.getElementById('feedbackSend').classList.add('ready');
+  document.getElementById('feedbackRatingError').style.display='none';
 }
 function chkFeedback(){
   if(starRating > 0) document.getElementById('feedbackSend').classList.add('ready');
@@ -491,7 +494,11 @@ function chkFeedback(){
 async function sendFeedback(){
   var rating = starRating;
   var text = document.getElementById('feedbackTxt').value.trim();
-  if(rating === 0) return;
+  if(rating === 0){
+    document.getElementById('feedbackRatingError').style.display='block';
+    return;
+  }
+  document.getElementById('feedbackRatingError').style.display='none';
 
   var stars = '';
   for(var i=0;i<rating;i++) stars += '🌸';
@@ -527,7 +534,8 @@ async function sendFeedback(){
 <div class="feedback-box" id="feedbackBox">
   <div class="feedback-lbl">Von Sarah</div>
   <div class="feedback-title">Hat dich das heute berührt?</div>
-  <p class="feedback-sub">Ich freue mich immer wenn ich höre wie das Tool bei euch ankommt. Wenn du magst, schreib mir kurz was du mitgenommen hast — ich lese jede Nachricht persönlich und teile sie manchmal (anonym) auf Instagram, damit andere Frauen wissen dass sie nicht alleine damit sind.</p>
+  <p class="feedback-sub">Ich freue mich immer wenn ich höre wie das Tool bei euch ankommt. Wenn du magst, schreib mir kurz was du mitgenommen hast. Ich lese jede Nachricht persönlich und teile sie manchmal (anonym) auf Instagram, damit andere Frauen wissen dass sie nicht alleine damit sind.</p>
+  <p class="feedback-hint">Tipp auf die Blüten, um zu bewerten. Ohne Bewertung kann das Formular nicht abgeschickt werden.</p>
   <div class="feedback-stars" id="stars">
     <span class="star" onclick="rateStar(1)">🌸</span>
     <span class="star" onclick="rateStar(2)">🌸</span>
@@ -535,9 +543,10 @@ async function sendFeedback(){
     <span class="star" onclick="rateStar(4)">🌸</span>
     <span class="star" onclick="rateStar(5)">🌸</span>
   </div>
+  <p class="feedback-rating-error" id="feedbackRatingError" style="display:none;">Bitte wähl zuerst eine Bewertung aus.</p>
   <textarea class="feedback-input" id="feedbackTxt" placeholder="Was ich heute mitnehme..." oninput="chkFeedback()"></textarea>
   <button class="feedback-send" id="feedbackSend" onclick="sendFeedback()">Teilen →</button>
-  <div class="feedback-thanks" id="feedbackThanks">Danke, das bedeutet mir wirklich viel. Ich freue mich über jede Nachricht. 🌸 — Sarah</div>
+  <div class="feedback-thanks" id="feedbackThanks">Danke, das bedeutet mir wirklich viel. Ich freue mich über jede Nachricht. 🌸 Sarah</div>
 </div>
 
 <div class="legal-footer">
