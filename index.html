@@ -280,9 +280,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
   </div>
 
   <div class="uebung-box" id="uebungBox">
-    <div class="uebung-lbl">🌸 Für genau diesen Moment</div>
+    <div class="uebung-lbl">🌸 Dein Gedanken-Switch</div>
     <div class="uebung-title" id="uebungTitle"></div>
     <p class="uebung-txt" id="uebungTxt"></p>
+    <label style="display:block;font-size:12px;font-weight:600;color:var(--brown-l);margin-top:16px;margin-bottom:6px;">Was ist wirklich passiert?</label>
+    <textarea id="switchReal" placeholder="Ganz nüchtern, ein Satz reicht..." style="width:100%;background:var(--cream);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--brown-d);resize:none;min-height:50px;outline:none;"></textarea>
+    <label style="display:block;font-size:12px;font-weight:600;color:var(--brown-l);margin-top:12px;margin-bottom:6px;">Was hat dein Kopf gerade daraus gemacht?</label>
+    <textarea id="switchStory" placeholder="Die Geschichte, die du dir gerade erzählst..." style="width:100%;background:var(--cream);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--brown-d);resize:none;min-height:50px;outline:none;"></textarea>
   </div>
 
   <div class="podcast-box">
@@ -442,23 +446,23 @@ function showError(msg){
   eb.style.display='block';
 }
 
-// Mini-Übungen je Kategorie, passend zur jeweiligen Situation.
+// Gedanken-Switch je Kategorie, passend zur jeweiligen Situation.
 var UEBUNG_POOL={
   stress:{
-    title:'Box-Atmung',
-    txt:'4 Sekunden einatmen. 4 Sekunden halten. 4 Sekunden ausatmen. 4 Sekunden halten. Wiederhol das 4x. Merkst du, wie dein Puls langsamer wird?'
+    title:'Trenn die Situation von der Geschichte',
+    txt:'Wenn der Stress gerade alles größer macht, als es ist: Schreib in zwei Sätzen auf, was objektiv passiert ist, und was dein Kopf gerade daraus gemacht hat. Diese zwei Fragen trennen das Ereignis von der Geschichte, die du dir gerade erzählst.'
   },
   schlaf:{
-    title:'4-7-8-Atmung',
-    txt:'4 Sekunden einatmen durch die Nase. 7 Sekunden halten. 8 Sekunden lang und hörbar ausatmen durch den Mund. Das beruhigt dein Nervensystem in wenigen Atemzügen, egal ob es gerade ums Einschlafen oder um akute Unruhe geht.'
+    title:'Bevor die Gedanken im Kreis drehen',
+    txt:'Schreib auf, was wirklich passiert ist, ganz nüchtern, ein Satz reicht. Dann daneben, was dein Kopf mitten in der Nacht daraus gemacht hat. Meistens ist der Unterschied größer, als es sich gerade anfühlt.'
   },
   zyklus_hormon:{
-    title:'Hand auf den Bauch',
-    txt:'Leg eine Hand auf deinen Bauch. Atme tief hinein, spür wie sich deine Hand hebt und senkt. 5 Atemzüge lang, ohne etwas zu verändern, einfach nur spüren.'
+    title:'Gerade jetzt fühlt sich alles größer an',
+    txt:'Hormonell bedingt wirkt momentan vieles dramatischer, als es ist. Schreib auf, was wirklich passiert ist, und was dein Kopf gerade daraus gemacht hat. Das hilft, die Situation vom Gefühl gerade zu trennen.'
   },
   allgemein:{
-    title:'3 tiefe Atemzüge',
-    txt:'Durch die Nase einatmen, durch den Mund lang ausatmen. Lass bei jedem Ausatmen bewusst die Schultern sinken.'
+    title:'Zwei Fragen, die einiges verändern',
+    txt:'Was ist hier wirklich passiert? Und was hat dein Kopf daraus gemacht? Schreib beides auf, auch wenn es nur ein Satz ist. Der Unterschied zwischen beidem ist oft aufschlussreicher als gedacht.'
   }
 };
 
@@ -467,6 +471,8 @@ function showUebung(kategorie){
   var u=UEBUNG_POOL[kategorie]||UEBUNG_POOL.allgemein;
   document.getElementById('uebungTitle').textContent=u.title;
   document.getElementById('uebungTxt').textContent=u.txt;
+  document.getElementById('switchReal').value='';
+  document.getElementById('switchStory').value='';
   box.style.display='block';
 }
 
