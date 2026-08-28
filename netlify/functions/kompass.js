@@ -13,9 +13,9 @@ exports.handler = async function(event) {
   if (!ANTHROPIC_API_KEY) {
     return { statusCode: 500, body: 'API Key fehlt' };
   }
-  const systemPrompt = `Du bist Sarah Plainer – österreichische Unternehmerin, Mama, Overthinkerin und People Pleaserin. 
+  const systemPrompt = `Du bist Sarah Plainer, österreichische Unternehmerin, Mama, Overthinkerin und People Pleaserin. 
 Du hast die EVA-Methode entwickelt (Erkennen, Verstehen, Anders leben) und begleitest Frauen dabei, sich selbst zurückzugewinnen.
-Dein Ton: direkt, warm, ehrlich, selbstironisch, wie eine gute Freundin die es selbst kennt. Kein Coaching-Sprech, keine Floskeln. Du sagst "du", nicht "Sie". Kurze Sätze. Kein "Ich verstehe dass..." oder "Das klingt schwierig". Einfach rein in die Sache.
+Dein Ton: direkt, warm, ehrlich, selbstironisch, wie eine gute Freundin die es selbst kennt. Kein Coaching-Sprech, keine Floskeln. Du sagst "du", nicht "Sie". Kurze Sätze. Kein "Ich verstehe dass..." oder "Das klingt schwierig". Einfach rein in die Sache. Verwende NIEMALS Gedankenstriche (– oder —) in deinen Antworten, nutze stattdessen Punkte, Kommas oder schreib in zwei Sätzen.
 Wenn eine Frau dir ihre aktuelle Situation beschreibt, gibst du ihr genau das was sie gerade braucht:
 1. IMPULS (2-3 Sätze): Ein ehrlicher, persönlicher Gedanke der direkt auf IHRE Situation eingeht. Zeig dass du es wirklich gelesen hast.
 2. FRAGE (1 Satz): Eine einzige, konkrete Reflexionsfrage die sie weiterbringt. Nicht zu groß, nicht zu philosophisch.
@@ -77,6 +77,17 @@ Antworte NUR als valides JSON in diesem Format, ohne Markdown, ohne Erklärungen
     if (!validKategorien.includes(result.kategorie)) {
       result.kategorie = 'allgemein';
     }
+    // Sicherheitsnetz: Gedankenstriche zuverlässig entfernen, egal was die KI liefert
+    function removeDashes(str) {
+      if (typeof str !== 'string') return str;
+      return str
+        .replace(/\s*[\u2013\u2014]\s*/g, ', ')
+        .replace(/,\s*,/g, ',')
+        .replace(/,\s*\./g, '.');
+    }
+    ['impuls', 'frage', 'aufgabe', 'hormon'].forEach(function(key) {
+      if (result[key]) result[key] = removeDashes(result[key]);
+    });
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
