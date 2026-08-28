@@ -124,6 +124,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
 .cta-btn{display:inline-block;background:linear-gradient(135deg,var(--rose-m),var(--rose-deep));color:var(--white);text-decoration:none;border-radius:99px;padding:14px 32px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;box-shadow:0 6px 20px rgba(160,56,80,.38);transition:transform .2s;position:relative;z-index:1;}
 .cta-btn:hover{transform:translateY(-2px);}
 .cta-sub{font-size:12px;color:rgba(255,255,255,.35);margin-top:10px;position:relative;z-index:1;}
+.cta-email-form{position:relative;z-index:1;margin-top:4px;}
+.cta-email-input{width:100%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.18);border-radius:99px;padding:13px 18px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--white);outline:none;margin-bottom:10px;text-align:center;}
+.cta-email-input::placeholder{color:rgba(255,255,255,.4);}
+.cta-email-input:focus{border-color:var(--rose-m);}
+.cta-email-msg{font-size:12.5px;margin-top:10px;display:none;}
+.cta-email-msg.ok{color:var(--rose-l);display:block;}
+.cta-email-msg.err{color:#e8a0a0;display:block;}
 
 /* Sarah bar */
 .sarah-bar{display:flex;align-items:center;gap:14px;background:var(--white);border-radius:18px;padding:16px 20px;border:1px solid var(--line);margin-bottom:18px;}
@@ -294,22 +301,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-
   <div id="errorBox" class="error-box" style="display:none;"></div>
 
   <div class="cta-box">
-    <div class="cta-tag">🤍 Dein nächster Schritt</div>
-    <div class="cta-title">Aus Angst geschwiegen,<br><em>und danach zerdacht?</em></div>
-    <p class="cta-desc">Kennst du das Gefühl, lieber zu schweigen, aus Angst was die andere Person von dir denken könnte, und danach lässt dich dein Kopf nicht mehr los? Genau dafür ist mein E.V.A. Workbook, mein Dankeschön an dich und meine Community.</p>
-    <a href="https://www.facelessmitsarah.at/p/JiBPQI" target="_blank" class="cta-btn">Zum Workbook →</a>
-    <div style="margin-top:14px;position:relative;z-index:1;">
-      <a href="https://www.facelessmitsarah.at/p/JiBPQI" target="_blank" 
-         style="display:inline-flex;align-items:center;gap:8px;
-                background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);
-                text-decoration:none;border-radius:99px;
-                padding:11px 22px;font-family:'DM Sans',sans-serif;
-                font-size:13px;font-weight:400;border:1px solid rgba(255,255,255,.2);
-                transition:all .2s;">
-        📄 Gratis: "Aus Angst geschwiegen" Workbook herunterladen
-      </a>
+    <div class="cta-tag">✨ Bald verfügbar</div>
+    <div class="cta-title">Mein neuer<br><em>EVA-Tiefenblick.</em></div>
+    <p class="cta-desc">Der Notfall-Kompass hilft dir im Moment. Aber was, wenn du auch verstehen willst, warum die Gedanken überhaupt so viel Raum einnehmen? Daran arbeite ich gerade, mein bisher persönlichstes Tool. Mehr verrate ich noch nicht. Trag dich ein, dann bist du unter den Ersten, die es erfahren.</p>
+    <div class="cta-email-form">
+      <input type="email" class="cta-email-input" id="ctaEmailInput" placeholder="deine@email.at">
+      <button class="cta-btn" style="border:none;cursor:pointer;width:100%;" onclick="submitCtaEmail()">Ich will dabei sein →</button>
+      <div class="cta-email-msg ok" id="ctaEmailOk">Angekommen! Du bist dabei. 🤍</div>
+      <div class="cta-email-msg err" id="ctaEmailErr">Hat leider nicht geklappt, magst du es nochmal versuchen?</div>
     </div>
-    <p class="cta-sub" style="margin-top:10px;">Kostenlos · PDF · Sofort verfügbar</p>
+    <p class="cta-sub">Kein Spam, nur eine Nachricht sobald es so weit ist.</p>
   </div>
 
   <div class="sarah-bar">
@@ -528,6 +529,42 @@ async function sendFeedback(){
   document.getElementById('feedbackTxt').style.display='none';
   document.getElementById('feedbackSend').style.display='none';
   document.getElementById('feedbackThanks').style.display='block';
+}// WICHTIG FÜR SARAH: Trag hier deine eigene Formspree-Form-ID für die Warteliste ein.
+var CTA_EMAIL_FORM_ID = 'DEINE_FORM_ID';
+
+function submitCtaEmail(){
+  var email = document.getElementById('ctaEmailInput').value.trim();
+  var okBox = document.getElementById('ctaEmailOk');
+  var errBox = document.getElementById('ctaEmailErr');
+  okBox.style.display = 'none';
+  errBox.style.display = 'none';
+
+  var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(!emailOk){
+    errBox.textContent = 'Magst du eine gültige E-Mail-Adresse eintragen?';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  fetch('https://formspree.io/f/'+CTA_EMAIL_FORM_ID, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Accept':'application/json'},
+    body: JSON.stringify({
+      email: email,
+      quelle: 'Notfall-Kompass, EVA-Tiefenblick Warteliste'
+    })
+  }).then(function(res){
+    if(res.ok){
+      okBox.style.display = 'block';
+      document.getElementById('ctaEmailInput').value = '';
+    } else {
+      errBox.textContent = 'Hat leider nicht geklappt, magst du es nochmal versuchen?';
+      errBox.style.display = 'block';
+    }
+  }).catch(function(){
+    errBox.textContent = 'Hat leider nicht geklappt, magst du es nochmal versuchen?';
+    errBox.style.display = 'block';
+  });
 }
 </script>
 
